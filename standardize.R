@@ -5,8 +5,31 @@ library(readxl)
 # read in original_data
 co_gsi <- read_excel("original_data/IYS2022_Coho_genetic_tissue_GCL_IYS_key_2023-08-25_ER.xlsx")|> 
   select("IYS_Specimen_ID" = specimen_id, "IAgroup" = resolved_stock_id)
+# check for duplicates
+sum(duplicated(co_gsi$IYS_Specimen_ID))
+
+co_dups <- co_gsi |> 
+  group_by(IYS_Specimen_ID) |> 
+  summarize(n = n()) |> 
+  filter(n > 1)
+
 cu_gsi <- read_csv("original_data/IYS chum individual assignments_9.21.23.csv")
+# check for duplicates
+sum(duplicated(cu_gsi$IYS_Specimen_ID))
+
+cu_dups <- cu_gsi |> 
+  group_by(IYS_Specimen_ID) |> 
+  summarize(n = n()) |> 
+  filter(n > 1)
+
 so_gsi <- read_csv("original_data/IYS sockeye individual assignments_9.21.23.csv")
+# check for duplicates
+sum(duplicated(so_gsi$IYS_Specimen_ID))
+
+so_dups <- so_gsi |> 
+  group_by(IYS_Specimen_ID) |> 
+  summarize(n = n()) |> 
+  filter(n > 1)
 
 # combine data
 gsi_2022 <- bind_rows(so_gsi, cu_gsi, co_gsi) |> 
