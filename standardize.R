@@ -4,15 +4,18 @@ library(readxl)
 
 # read in original_data
 co_gsi <- read_excel("original_data/IYS2022_Coho_genetic_tissue_GCL_IYS_key_2023-08-25_ER.xlsx")|> 
-  select(specimen_id, "IAgroup" = resolved_stock_id)
+  select("IYS_Specimen_ID" = specimen_id, "IAgroup" = resolved_stock_id)
 cu_gsi <- read_csv("original_data/IYS chum individual assignments_9.21.23.csv")
 so_gsi <- read_csv("original_data/IYS sockeye individual assignments_9.21.23.csv")
 
 # combine data
 gsi_2022 <- bind_rows(so_gsi, cu_gsi, co_gsi) |> 
-  select("specimen_id" = "IYS_Specimen_ID", IAgroup) |> 
+  select("specimen_id" = IYS_Specimen_ID, IAgroup) |> 
   # find and replace "CanTrawl" with "Trawl" in specimen_id string
   mutate(specimen_id = str_replace(specimen_id, "CanTrawl", "Trawl"))
+
+# find sum of NA in specimen_id
+sum(is.na(gsi_2022$specimen_id))
 
 # rsync IDC specimen data or download manually
 # system("rsync -avz /Users/brettjohnson/R\\ Projects/IYS/IYS-Integrated-Data-Collection/output_datasets/IYS_trawl_specimen.csv .")
