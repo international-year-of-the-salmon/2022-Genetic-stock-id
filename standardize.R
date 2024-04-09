@@ -13,7 +13,7 @@ co_dups <- co_gsi |>
   summarize(n = n()) |> 
   filter(n > 1)
 
-cu_gsi <- read_csv("original_data/IYS chum individual assignments_9.21.23.csv")
+cu_gsi <- read_csv("original_data/IYS chum individual assignments_4.4.24.csv")
 # check for duplicates
 sum(duplicated(cu_gsi$IYS_Specimen_ID))
 
@@ -22,7 +22,7 @@ cu_dups <- cu_gsi |>
   summarize(n = n()) |> 
   filter(n > 1)
 
-so_gsi <- read_csv("original_data/IYS sockeye individual assignments_9.21.23.csv")
+so_gsi <- read_csv("original_data/2022_IYS_sockeye_assignments_4.4.24.csv")
 # check for duplicates
 sum(duplicated(so_gsi$IYS_Specimen_ID))
 
@@ -31,8 +31,10 @@ so_dups <- so_gsi |>
   summarize(n = n()) |> 
   filter(n > 1)
 
+#TODO: Add back in chum and sockeye once duplicates are resolved
+
 # combine data
-gsi_2022 <- bind_rows(so_gsi, cu_gsi, co_gsi) |> 
+gsi_2022 <- bind_rows(co_gsi, cu_gsi, so_gsi) |> 
   select("specimen_id" = IYS_Specimen_ID, IAgroup) |> 
   # find and replace "CanTrawl" with "Trawl" in specimen_id string
   mutate(specimen_id = str_replace(specimen_id, "CanTrawl", "Trawl"))
@@ -57,6 +59,7 @@ gsi_2022_summary <- gsi_2022 |>
 
 # save summary csv
 write_csv(gsi_2022_summary, "standardized_data/gsi_2022_summary.csv")
+
 
 # write gsi_2022 to standardized_data
 write_csv(gsi_2022, "standardized_data/gsi_2022.csv")
